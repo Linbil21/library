@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("container");
   const signUpButton = document.getElementById("signUp");
   const signInButton = document.getElementById("signIn");
-  
+
   const toRegisterMobile = document.getElementById("toRegisterMobile");
   const toLoginMobile = document.getElementById("toLoginMobile");
 
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("isLoggedIn", "true");
         localStorage.setItem("loggedInName", storedUser.name);
         alert("Login successful!");
-        window.location.href = "dashboard.html";
+        window.location.href = "Dashboard.html";
       } else {
         alert("Incorrect Student ID or Password.");
       }
