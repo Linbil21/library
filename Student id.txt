@@ -1,0 +1,11 @@
+***** Guide***** 
+
+Registered 
+
+student Id :s2301007
+Linbil Celestre
+password: 123
+
+
+  
+<button class="btn-header" id="header" onclick="logout()">Logout</button> </li>
