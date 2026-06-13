@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>New Arrivals</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="./fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/fontawesome.min.css">
+  <style>
+    /* NEW ARRIVALS TABLE */
+    .arrivals-table { width: 100%; border-collapse: collapse; }
+    .arrivals-table th {
+      background: #2b2b2b; color: white;
+      padding: 11px 15px; text-align: left;
+      font-size: 14px; font-weight: 500;
+    }
+    .arrivals-table td {
+      padding: 11px 15px; background: #f0f0f0;
+      border-bottom: 1px solid #ddd; font-size: 14px;
+    }
+    .arrivals-table tr:nth-child(even) td { background: #e4e4e4; }
+
+    /* TOP ROW */
+    .arrivals-header-row {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 18px;
+    }
+    .arrivals-header-row h2 { font-size: 20px; font-weight: 500; color: #333; }
+    .arrivals-actions { display: flex; align-items: center; gap: 12px; }
+    .btn-add-new-book {
+      background: #1a73e8; color: white; border: none;
+      padding: 8px 16px; border-radius: 5px; font-size: 14px;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+    }
+    .btn-add-new-book:hover { background: #1557b0; }
+
+    .modal-overlay { display: none; }
+    .modal-overlay.show { display: flex; }
+    .modal-content {
+      background: #ffffff !important;
+      border-radius: 10px !important;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25) !important;
+      width: 50% !important;
+      max-width: 600px !important;
+      min-width: 320px !important;
+      padding: 28px 24px 20px !important;
+      box-sizing: border-box !important;
+      animation: modalSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-18px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar" id="sidebar">
+      <div class="sidebar-user">
+          <i class="fas fa-bars" id="menu-btn-sidebar" style="cursor: pointer;"></i>
+          <span id="sidebar-user-name">Welcome, Linbill</span>
+      </div>
+      <ul class="sidebar-links top-links">
+          <li><a href="Dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-search"></i> Search Books</a></li>
+          <li><a href="Borrowers.html"><i class="fas fa-address-book"></i> Digital Library</a></li>
+          <li><a href="LibraryFines.html"><i class="fas fa-money-check"></i> Library Fines</a></li>
+          <li><a href="NewArrivals.html"><i class="fas fa-envelope"></i> New Arrivals</a></li>
+      </ul>
+      <ul class="sidebar-links bottom-links">
+          <li><a href="HelpFAQs.html"><i class="fas fa-question"></i> Help & FAQs</a></li>
+          <li><a href="javascript:void(0)" onclick="logout()"><i class="fas fa-door-open"></i> Log Out</a></li>
+      </ul>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Header -->
+  <header class="top-header">
+      <div class="header-left">
+          <i class="fas fa-bars menu-icon" id="menu-btn" style="cursor: pointer;"></i>
+          <span class="site-title">Welcome To Library Portal</span>
+      </div>
+      <div class="header-center">
+          <div class="search-bar">
+              <input type="text" placeholder="Search...">
+              <button class="search-btn"><i class="fas fa-search"></i></button>
+          </div>
+      </div>
+      <div class="header-right">
+          <a href="Dashboard.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+          <a href="AboutUs.html" class="nav-link"><i class="fas fa-user"></i> About</a>
+          <a href="ContactUs.html" class="nav-link"><i class="fas fa-phone"></i> Contact Us</a>
+          <a href="javascript:void(0)" onclick="logout()" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+      </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="fines-container">
+
+      <div class="arrivals-header-row">
+        <h2>New Arrivals</h2>
+        <div class="arrivals-actions">
+          <button class="btn-add-new-book" onclick="openModal(-1)">
+            <i class="fas fa-plus"></i> Add New Book
+          </button>
+          <div class="fines-search-box">
+            <input type="text" id="arrivalsSearch" placeholder="Search..." oninput="searchArrivals()">
+            <button class="btn-fines-search"><i class="fas fa-search"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="arrivals-table">
+          <thead>
+            <tr>
+              <th>Book Arrive</th>
+              <th>Date Added</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="arrivalsBody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="arrivalsModal">
+    <div class="modal-content">
+      <h3 id="arrivalsModalTitle">Add / Update Book</h3>
+      <input type="hidden" id="editIndex" value="-1">
+      <label>Enter book name</label>
+      <input type="text" id="modalBookName" placeholder="Enter book name">
+      <label>Date</label>
+      <input type="date" id="modalDate">
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-modal-save" onclick="saveArrival()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/Dashboard.js"></script>
+  <script>
+    let arrivals = [
+      { book: "The Great Gatsby",  date: "2025-06-01" },
+      { book: "Noli Me Tangere",   date: "2025-06-03" },
+      { book: "Lore",              date: "2025-06-05" },
+      { book: "You Heal",          date: "2025-06-08" },
+    ];
+
+    function renderArrivals(list) {
+      const src = list !== undefined ? list : arrivals;
+      const tbody = document.getElementById("arrivalsBody");
+      tbody.innerHTML = "";
+      src.forEach((a, i) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${a.book}</td>
+            <td>${a.date}</td>
+            <td>
+              <button class="btn-action update"  onclick="openModal(${i})">ADD</button>
+              <button class="btn-action delete"  onclick="deleteArrival(${i})">DELETE</button>
+            </td>
+          </tr>`;
+      });
+    }
+
+    function openModal(index) {
+      document.getElementById("editIndex").value = index;
+      if (index >= 0) {
+        document.getElementById("arrivalsModalTitle").textContent = "Add / Update Book";
+        document.getElementById("modalBookName").value = arrivals[index].book;
+        document.getElementById("modalDate").value     = arrivals[index].date;
+      } else {
+        document.getElementById("arrivalsModalTitle").textContent = "Add New Book";
+        document.getElementById("modalBookName").value = "";
+        document.getElementById("modalDate").value     = "";
+      }
+      document.getElementById("arrivalsModal").classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      document.getElementById("arrivalsModal").classList.remove("show");
+      document.body.style.overflow = "";
+    }
+
+    function saveArrival() {
+      const i    = parseInt(document.getElementById("editIndex").value);
+      const book = document.getElementById("modalBookName").value.trim();
+      const date = document.getElementById("modalDate").value;
+      if (!book) { alert("Please enter a book name."); return; }
+      if (i >= 0) {
+        arrivals[i] = { book, date };
+      } else {
+        arrivals.push({ book, date });
+      }
+      closeModal();
+      renderArrivals();
+    }
+
+    function deleteArrival(i) {
+      if (confirm("Remove this book from New Arrivals?")) {
+        arrivals.splice(i, 1);
+        renderArrivals();
+      }
+    }
+
+    function searchArrivals() {
+      const q = document.getElementById("arrivalsSearch").value.toLowerCase();
+      renderArrivals(arrivals.filter(a => a.book.toLowerCase().includes(q)));
+    }
+
+    // Close on backdrop click
+    document.getElementById("arrivalsModal").addEventListener("click", function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    // Close on Escape key
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeModal();
+    });
+
+    renderArrivals();
+  </script>
+</body>
+</html>

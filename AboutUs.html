@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="./fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/fontawesome.min.css">
+</head>
+<body>
+  
+  <div class="sidebar" id="sidebar">
+      <div class="sidebar-user">
+          <i class="fas fa-bars" id="menu-btn-sidebar" style="cursor: pointer;"></i>
+          <span id="sidebar-user-name">Welcome, Linbill</span>
+      </div>
+      <ul class="sidebar-links top-links">
+          <li><a href="Dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-search"></i> Search Books</a></li>
+          <li><a href="Borrowers.html"><i class="fas fa-address-book"></i> Digital Library</a></li>
+          <li><a href="LibraryFines.html"><i class="fas fa-money-check"></i> Library Fines</a></li>
+          <li><a href="NewArrivals.html"><i class="fas fa-envelope"></i> New Arrivals</a></li>
+      </ul>
+      <ul class="sidebar-links bottom-links">
+          <li><a href="HelpFAQs.html"><i class="fas fa-question"></i> Help & FAQs</a></li>
+          <li><a href="javascript:void(0)" onclick="logout()"><i class="fas fa-door-open"></i> Log Out</a></li>
+      </ul>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Header Component -->
+  <header class="top-header">
+      <div class="header-left">
+          <i class="fas fa-bars menu-icon" id="menu-btn" style="cursor: pointer;"></i>
+          <span class="site-title">Welcome To Library Portal</span>
+      </div>
+      
+      <div class="header-center">
+          <div class="search-bar">
+              <input type="text" placeholder="Search...">
+              <button class="search-btn"><i class="fas fa-search"></i></button>
+          </div>
+      </div>
+      
+      <div class="header-right">
+          <a href="Dashboard.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+          <a href="AboutUs.html" class="nav-link"><i class="fas fa-user"></i> About</a>
+          <a href="ContactUs.html" class="nav-link"><i class="fas fa-phone"></i> Contact Us</a>
+          <a href="javascript:void(0)" onclick="logout()" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+      </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="about-container">
+      <h2>About Us</h2>
+      
+      <p class="about-text">Welcome to <strong>Library Portal</strong>, a hub of knowledge, learning, and community engagement. Established to serve readers, researchers, and learners of all ages, our library is committed to providing free and open access to a wealth of information, resources, and services.</p>
+      
+      <p class="about-text">Our collection includes a wide range of books, academic journals, newspapers, digital media, and reference materials to support both education and leisure reading. Whether you're a student, teacher, researcher, or lifelong learner, our space is designed to inspire curiosity and encourage discovery.</p>
+      
+      <h3>What We Offer:</h3>
+      <ul class="about-list">
+          <li>Extensive collection of print and digital books</li>
+          <li>Free internet and computer access</li>
+          <li>Study rooms and quiet reading areas</li>
+          <li>Educational programs and workshops</li>
+          <li>Friendly and knowledgeable staff ready to assist you</li>
+      </ul>
+      
+      <p class="about-text">At <strong>Library Portal</strong>, we believe that libraries are more than just places to read—they are places to grow. Join us in promoting a culture of learning and community.</p>
+      
+      <h3 style="text-align: center;">Meet Our Team</h3>
+      <div class="team-container">
+          <div class="team-member">
+              <img src="Image/blank-profile-picture-973460_640.png" alt="Team Member" class="team-img" onerror="this.src='https://via.placeholder.com/80'">
+              <p>Linbil Celestre</p>
+          </div>
+          <div class="team-member">
+              <img src="Image/blank-profile-picture-973460_640.png" alt="Team Member" class="team-img" onerror="this.src='https://via.placeholder.com/80'">
+              <p>Lord Aldren Silvano</p>
+          </div>
+          <div class="team-member">
+              <img src="Image/blank-profile-picture-973460_640.png" alt="Team Member" class="team-img" onerror="this.src='https://via.placeholder.com/80'">
+              <p>Micheal Subito</p>
+          </div>
+          <div class="team-member">
+              <img src="Image/blank-profile-picture-973460_640.png" alt="Team Member" class="team-img" onerror="this.src='https://via.placeholder.com/80'">
+              <p>Audrey Duarong</p>
+          </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="js/Dashboard.js"></script>
+</body>
+</html>

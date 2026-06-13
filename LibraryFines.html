@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Library Fines</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="./fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/fontawesome.min.css">
+  <style>
+    .modal-overlay { display: none; }
+    .modal-overlay.show { display: flex; }
+    .modal-content {
+      background: #ffffff !important;
+      border-radius: 10px !important;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25) !important;
+      width: 50% !important;
+      max-width: 600px !important;
+      min-width: 320px !important;
+      padding: 28px 24px 20px !important;
+      box-sizing: border-box !important;
+      animation: modalSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-18px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Paid row styling */
+    .fines-table tr.paid td {
+      color: #aaa;
+      text-decoration: line-through;
+      background: #f9f9f9;
+    }
+    .fines-table tr.paid .btn-action.pay {
+      background-color: #9e9e9e;
+      cursor: default;
+    }
+    .badge-paid {
+      display: inline-block;
+      background: #4caf50;
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar" id="sidebar">
+      <div class="sidebar-user">
+          <i class="fas fa-bars" id="menu-btn-sidebar" style="cursor: pointer;"></i>
+          <span id="sidebar-user-name">Welcome, Linbill</span>
+      </div>
+      <ul class="sidebar-links top-links">
+          <li><a href="Dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-search"></i> Search Books</a></li>
+          <li><a href="Borrowers.html"><i class="fas fa-address-book"></i> Digital Library</a></li>
+          <li><a href="LibraryFines.html"><i class="fas fa-money-check"></i> Library Fines</a></li>
+          <li><a href="NewArrivals.html"><i class="fas fa-envelope"></i> New Arrivals</a></li>
+      </ul>
+      <ul class="sidebar-links bottom-links">
+          <li><a href="HelpFAQs.html"><i class="fas fa-question"></i> Help & FAQs</a></li>
+          <li><a href="javascript:void(0)" onclick="logout()"><i class="fas fa-door-open"></i> Log Out</a></li>
+      </ul>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <header class="top-header">
+      <div class="header-left">
+          <i class="fas fa-bars menu-icon" id="menu-btn" style="cursor: pointer;"></i>
+          <span class="site-title">Welcome To Library Portal</span>
+      </div>
+      <div class="header-center">
+          <div class="search-bar">
+              <input type="text" placeholder="Search...">
+              <button class="search-btn"><i class="fas fa-search"></i></button>
+          </div>
+      </div>
+      <div class="header-right">
+          <a href="Dashboard.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+          <a href="AboutUs.html" class="nav-link"><i class="fas fa-user"></i> About</a>
+          <a href="ContactUs.html" class="nav-link"><i class="fas fa-phone"></i> Contact Us</a>
+          <a href="javascript:void(0)" onclick="logout()" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+      </div>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="fines-container">
+      <div class="fines-header-row">
+        <h2>Library | Fines</h2>
+        <div class="fines-actions">
+          <button class="btn-primary-action" onclick="openFineModal(-1)">
+            <i class="fas fa-plus"></i> Add Payment
+          </button>
+          <div class="fines-search-box">
+            <input type="text" id="finesSearch" placeholder="Search..." oninput="searchFines()">
+            <button class="btn-fines-search"><i class="fas fa-search"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="fines-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Return Payment</th>
+              <th>Due Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="finesBody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Add / Update Fine Modal — OUTSIDE main -->
+  <div class="modal-overlay" id="fineModal">
+    <div class="modal-content">
+      <h3 id="fineModalTitle">Add Payment</h3>
+      <input type="hidden" id="fineEditIndex" value="-1">
+      <label>Name</label>
+      <input type="text" id="fineName" placeholder="Enter name">
+      <label>Return Payment</label>
+      <input type="text" id="finePayment" placeholder="e.g. ₱ 100.00">
+      <label>Due Date</label>
+      <input type="date" id="fineDueDate">
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeFineModal()">Cancel</button>
+        <button class="btn-modal-save" onclick="saveFine()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/Dashboard.js"></script>
+  <script>
+    // ── Data ──────────────────────────────────────────────────────────
+    let fines = [
+      { name: "Lord Aldren Silvano", payment: "P 55.00 With Talent Fee", dueDate: "2023-10-15", paid: false },
+      { name: "Subito Micheal",      payment: "₱ 100.00",                dueDate: "2023-10-15", paid: false },
+      { name: "Audrey Duarong",      payment: "₱ 100.00",                dueDate: "2023-10-15", paid: false },
+      { name: "Linbil Celestre",     payment: "₱ 200.00",                dueDate: "2023-10-15", paid: false },
+    ];
+
+    // ── Render ─────────────────────────────────────────────────────────
+    function renderFines(list) {
+      const src = list !== undefined ? list : fines;
+      const tbody = document.getElementById("finesBody");
+      tbody.innerHTML = "";
+
+      src.forEach((f, i) => {
+        const paidClass = f.paid ? "paid" : "";
+        const payLabel  = f.paid
+          ? `Pay <span class="badge-paid">Paid</span>`
+          : "Pay";
+        const payDisabled = f.paid ? "disabled style='background:#9e9e9e;cursor:default;'" : "";
+
+        tbody.innerHTML += `
+          <tr class="${paidClass}">
+            <td>${f.name}</td>
+            <td>${f.payment}</td>
+            <td>${f.dueDate}</td>
+            <td>
+              <button class="btn-action pay"    onclick="payFine(${i})"    ${payDisabled}>${payLabel}</button>
+              <button class="btn-action update" onclick="openFineModal(${i})">Update</button>
+              <button class="btn-action delete" onclick="deleteFine(${i})">Delete</button>
+            </td>
+          </tr>`;
+      });
+    }
+
+    // ── Pay ────────────────────────────────────────────────────────────
+    function payFine(i) {
+      if (fines[i].paid) return;
+      if (confirm(`Mark "${fines[i].name}" as paid?`)) {
+        fines[i].paid = true;
+        renderFines();
+      }
+    }
+
+    // ── Delete ─────────────────────────────────────────────────────────
+    function deleteFine(i) {
+      if (confirm(`Delete fine record for "${fines[i].name}"?`)) {
+        fines.splice(i, 1);
+        renderFines();
+      }
+    }
+
+    // ── Modal Open ─────────────────────────────────────────────────────
+    function openFineModal(index) {
+      document.getElementById("fineEditIndex").value = index;
+      if (index >= 0) {
+        document.getElementById("fineModalTitle").textContent = "Update Payment";
+        document.getElementById("fineName").value    = fines[index].name;
+        document.getElementById("finePayment").value = fines[index].payment;
+        document.getElementById("fineDueDate").value = fines[index].dueDate;
+      } else {
+        document.getElementById("fineModalTitle").textContent = "Add Payment";
+        document.getElementById("fineName").value    = "";
+        document.getElementById("finePayment").value = "";
+        document.getElementById("fineDueDate").value = "";
+      }
+      document.getElementById("fineModal").classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+
+    // ── Modal Close ────────────────────────────────────────────────────
+    function closeFineModal() {
+      document.getElementById("fineModal").classList.remove("show");
+      document.body.style.overflow = "";
+    }
+
+    // ── Save ───────────────────────────────────────────────────────────
+    function saveFine() {
+      const i       = parseInt(document.getElementById("fineEditIndex").value);
+      const name    = document.getElementById("fineName").value.trim();
+      const payment = document.getElementById("finePayment").value.trim();
+      const dueDate = document.getElementById("fineDueDate").value;
+
+      if (!name)    { alert("Please enter a name.");           return; }
+      if (!payment) { alert("Please enter a payment amount."); return; }
+
+      if (i >= 0) {
+        fines[i] = { ...fines[i], name, payment, dueDate };
+      } else {
+        fines.push({ name, payment, dueDate, paid: false });
+      }
+      closeFineModal();
+      renderFines();
+    }
+
+    // ── Search ─────────────────────────────────────────────────────────
+    function searchFines() {
+      const q = document.getElementById("finesSearch").value.toLowerCase();
+      renderFines(fines.filter(f =>
+        f.name.toLowerCase().includes(q) ||
+        f.payment.toLowerCase().includes(q)
+      ));
+    }
+
+    // ── Close on backdrop/Escape ───────────────────────────────────────
+    document.getElementById("fineModal").addEventListener("click", function(e) {
+      if (e.target === this) closeFineModal();
+    });
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeFineModal();
+    });
+
+    // ── Init ───────────────────────────────────────────────────────────
+    renderFines();
+  </script>
+</body>
+</html>

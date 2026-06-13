@@ -3,25 +3,80 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login Page</title>
+  <title>Library Portal - Authentication</title>
   <link rel="stylesheet" href="css/logReg.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Library Portal</h1>
-    <div class="container-wapper">
-      <form class="forms">
+  <div class="container" id="container">
+    
+    <!-- Sign Up Form (Register) -->
+    <div class="form-container sign-up-container">
+      <form class="forms" id="registerForm">
+        <h1>Register</h1>
+        <span>Create your student account</span>
 
-        <label>Student Id:</label>
+        <label>Student ID:</label>
+        <input class="input-id" type="text" placeholder="Enter Student-ID" required>
+
+        <label>Student Name:</label>
+        <input class="input-Studentname" type="text" placeholder="Enter Student Name" required>
+
+        <label>Email Address:</label>
+        <input class="input-EmailAddress" type="email" placeholder="Enter Email Address" required>
+
+        <label>Password:</label>
+        <input class="input-Password" type="password" placeholder="Enter Password" required>
+
+        <label>Confirm Password:</label>
+        <input class="input-ConfirmPassword" type="password" placeholder="Confirm Password" required>
+
+        <button class="btn-submit" type="submit">Register</button>
+        
+        <!-- Mobile Only Switching Link -->
+        <p class="mobile-only-toggle">Already have an account? <a href="#login" id="toLoginMobile">Login Here</a></p>
+      </form>
+    </div>
+
+    <!-- Sign In Form (Login) -->
+    <div class="form-container sign-in-container">
+      <form class="forms" id="loginForm">
+        <h1>Library Portal</h1>
+        <span>Sign in to access your dashboard</span>
+
+        <label>Student ID:</label>
         <input class="input-username" type="text" placeholder="Enter Student-ID" required>
 
         <label>Password:</label>
         <input class="input-password" type="password" placeholder="Enter Password" required>
 
         <button class="btn-submit" type="submit">Login</button>
-        <a class="btn-logReg" href="register.html">Register Here</a>
+        
+        <!-- Mobile Only Switching Link -->
+        <p class="mobile-only-toggle">Don't have an account? <a href="#register" id="toRegisterMobile">Register Here</a></p>
       </form>
     </div>
+
+    <!-- Overlay Sliding Container (Desktop Only) -->
+    <div class="overlay-container">
+      <div class="overlay">
+        
+        <!-- Left Overlay Panel (shows when Register is active) -->
+        <div class="overlay-panel overlay-left">
+          <h1>Welcome Back!</h1>
+          <p>Already have an account? Sign in and continue exploring our library catalog.</p>
+          <button class="ghost" id="signIn">Login Here</button>
+        </div>
+        
+        <!-- Right Overlay Panel (shows when Login is active) -->
+        <div class="overlay-panel overlay-right">
+          <h1>Hello, Friend!</h1>
+          <p>New here? Register with your student details and start borrowing books today.</p>
+          <button class="ghost" id="signUp">Register Here</button>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 
   <script src="js/login.js"></script>

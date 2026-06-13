@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Borrowers</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="./fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/fontawesome.min.css">
+  <style>
+    .modal-overlay {
+      display: none;
+    }
+    .modal-overlay.show {
+      display: flex;
+    }
+    .modal-content {
+      background: #ffffff !important;
+      border-radius: 10px !important;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25) !important;
+      width: 50% !important;
+      max-width: 600px !important;
+      min-width: 320px !important;
+      padding: 28px 24px 20px !important;
+      box-sizing: border-box !important;
+      animation: modalSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-20px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .borrowers-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .borrowers-table th {
+      font-weight: bold;
+      padding: 10px 15px;
+      text-align: left;
+      border-bottom: 2px solid #ccc;
+      background: #fff;
+      color: #333;
+    }
+    .borrowers-table td {
+      padding: 10px 15px;
+      background: #f4f4f4;
+      border-bottom: 1px solid #ddd;
+    }
+    .borrowers-table tr:nth-child(even) td {
+      background: #eaeaea;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="sidebar" id="sidebar">
+      <div class="sidebar-user">
+          <i class="fas fa-bars" id="menu-btn-sidebar" style="cursor: pointer;"></i>
+          <span id="sidebar-user-name">Welcome, Linbill</span>
+      </div>
+      <ul class="sidebar-links top-links">
+          <li><a href="Dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-search"></i> Search Books</a></li>
+          <li><a href="Borrowers.html"><i class="fas fa-address-book"></i> Digital Library</a></li>
+          <li><a href="LibraryFines.html"><i class="fas fa-money-check"></i> Library Fines</a></li>
+          <li><a href="NewArrivals.html"><i class="fas fa-envelope"></i> New Arrivals</a></li>
+      </ul>
+      <ul class="sidebar-links bottom-links">
+          <li><a href="HelpFAQs.html"><i class="fas fa-question"></i> Help & FAQs</a></li>
+          <li><a href="javascript:void(0)" onclick="logout()"><i class="fas fa-door-open"></i> Log Out</a></li>
+      </ul>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Header -->
+  <header class="top-header">
+      <div class="header-left">
+          <i class="fas fa-bars menu-icon" id="menu-btn" style="cursor: pointer;"></i>
+          <span class="site-title">Welcome To Library Portal</span>
+      </div>
+      <div class="header-center">
+          <div class="search-bar">
+              <input type="text" placeholder="Search...">
+              <button class="search-btn"><i class="fas fa-search"></i></button>
+          </div>
+      </div>
+      <div class="header-right">
+          <a href="Dashboard.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+          <a href="AboutUs.html" class="nav-link"><i class="fas fa-user"></i> About</a>
+          <a href="ContactUs.html" class="nav-link"><i class="fas fa-phone"></i> Contact Us</a>
+          <a href="javascript:void(0)" onclick="logout()" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+      </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="borrowers-container">
+      
+      <div class="fines-header-row">
+        <div class="fines-search-box">
+          <input type="text" id="borrowerSearch" placeholder="Search..." oninput="searchBorrowers()">
+          <button class="btn-fines-search"><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+
+      <div class="table-responsive" style="border-radius: 6px; overflow: hidden; border: 1px solid #ccc;">
+        <table class="borrowers-table" id="borrowersTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Book ID</th>
+              <th>Title</th>
+              <th>Issue Date</th>
+              <th>Due Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="borrowersBody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ✅ Modal OUTSIDE <main> so it covers the full viewport -->
+  <div class="modal-overlay" id="borrowerModal">
+    <div class="modal-content">
+      <h3 id="modalTitle">Add Borrower</h3>
+      <input type="hidden" id="editIndex" value="-1">
+      <label>Name</label>
+      <input type="text" id="modalName" placeholder="Name">
+      <label>Book ID</label>
+      <input type="text" id="modalBookId" placeholder="Book ID">
+      <label>Book Title</label>
+      <input type="text" id="modalTitle_" placeholder="Book Title">
+      <label>Author</label>
+      <input type="text" id="modalAuthor" placeholder="Author">
+      <label>Issue Date</label>
+      <input type="date" id="modalIssueDate">
+      <label>Due Date</label>
+      <input type="date" id="modalDueDate">
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModal()">Cancel</button>
+        <button class="btn-modal-save" onclick="saveBorrower()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/Dashboard.js"></script>
+  <script>
+    // Borrower data
+    let borrowers = [
+      { name: "Lord Aldron Silvano", bookId: "BK100", title: "The Great Gatsby", author: "F. Scott Fitzgerald", issueDate: "2025-05-10", dueDate: "2025-06-10" },
+      { name: "Micheal Subito",      bookId: "BK600", title: "Noli Me Tangere",   author: "Jose Rizal",         issueDate: "2025-05-10", dueDate: "2025-06-10" },
+      { name: "Audrey Duarong",      bookId: "BK500", title: "El Filibusterismo", author: "Jose Rizal",         issueDate: "2025-05-10", dueDate: "2025-06-10" },
+      { name: "Linbil Celestre",     bookId: "BK003", title: "Florante at Laura", author: "Francisco Balagtas", issueDate: "2025-05-10", dueDate: "2025-06-10" },
+    ];
+
+    function renderBorrowers(list = borrowers) {
+      const tbody = document.getElementById("borrowersBody");
+      tbody.innerHTML = "";
+      list.forEach((b, i) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${b.name}</td>
+            <td>${b.bookId}</td>
+            <td>${b.title}</td>
+            <td>${b.issueDate}</td>
+            <td>${b.dueDate}</td>
+            <td>
+              <button class="btn-action add" onclick="openAddModal(${i})">ADD</button>
+              <button class="btn-action deleted" onclick="deleteBorrower(${i})">DELETED</button>
+            </td>
+          </tr>`;
+      });
+    }
+
+    function openAddModal(index) {
+      const b = borrowers[index];
+      document.getElementById("modalTitle").textContent = "Add Borrower";
+      document.getElementById("editIndex").value = index;
+      document.getElementById("modalName").value = b.name;
+      document.getElementById("modalBookId").value = b.bookId;
+      document.getElementById("modalTitle_").value = b.title;
+      document.getElementById("modalAuthor").value = b.author;
+      document.getElementById("modalIssueDate").value = b.issueDate;
+      document.getElementById("modalDueDate").value = b.dueDate;
+      document.getElementById("borrowerModal").classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+      document.getElementById("borrowerModal").classList.remove("show");
+      document.body.style.overflow = "";
+    }
+
+    function saveBorrower() {
+      const i = parseInt(document.getElementById("editIndex").value);
+      const updated = {
+        name:      document.getElementById("modalName").value,
+        bookId:    document.getElementById("modalBookId").value,
+        title:     document.getElementById("modalTitle_").value,
+        author:    document.getElementById("modalAuthor").value,
+        issueDate: document.getElementById("modalIssueDate").value,
+        dueDate:   document.getElementById("modalDueDate").value,
+      };
+      if (i >= 0) {
+        borrowers[i] = updated;
+      } else {
+        borrowers.push(updated);
+      }
+      closeModal();
+      renderBorrowers();
+    }
+
+    function deleteBorrower(i) {
+      if (confirm("Remove this borrower record?")) {
+        borrowers.splice(i, 1);
+        renderBorrowers();
+      }
+    }
+
+    function searchBorrowers() {
+      const q = document.getElementById("borrowerSearch").value.toLowerCase();
+      const filtered = borrowers.filter(b =>
+        b.name.toLowerCase().includes(q) ||
+        b.bookId.toLowerCase().includes(q) ||
+        b.title.toLowerCase().includes(q)
+      );
+      renderBorrowers(filtered);
+    }
+
+    // Close modal when clicking outside
+    document.getElementById("borrowerModal").addEventListener("click", function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    renderBorrowers();
+  </script>
+</body>
+</html>

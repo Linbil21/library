@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact Us</title>
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="./fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/fontawesome.min.css">
+</head>
+<body>
+  
+  <div class="sidebar" id="sidebar">
+      <div class="sidebar-user">
+          <i class="fas fa-bars" id="menu-btn-sidebar" style="cursor: pointer;"></i>
+          <span id="sidebar-user-name">Welcome, Linbill</span>
+      </div>
+      <ul class="sidebar-links top-links">
+          <li><a href="Dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-search"></i> Search Books</a></li>
+          <li><a href="Borrowers.html"><i class="fas fa-address-book"></i> Digital Library</a></li>
+          <li><a href="LibraryFines.html"><i class="fas fa-money-check"></i> Library Fines</a></li>
+          <li><a href="#"><i class="fas fa-envelope"></i> New Arrivals</a></li>
+      </ul>
+      <ul class="sidebar-links bottom-links">
+          <li><a href="HelpFAQs.html"><i class="fas fa-question"></i> Help & FAQs</a></li>
+          <li><a href="javascript:void(0)" onclick="logout()"><i class="fas fa-door-open"></i> Log Out</a></li>
+      </ul>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
+  <!-- Header Component -->
+  <header class="top-header">
+      <div class="header-left">
+          <i class="fas fa-bars menu-icon" id="menu-btn" style="cursor: pointer;"></i>
+          <span class="site-title">Welcome To Library Portal</span>
+      </div>
+      
+      <div class="header-center">
+          <div class="search-bar">
+              <input type="text" placeholder="Search...">
+              <button class="search-btn"><i class="fas fa-search"></i></button>
+          </div>
+      </div>
+      
+      <div class="header-right">
+          <a href="Dashboard.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+          <a href="AboutUs.html" class="nav-link"><i class="fas fa-user"></i> About</a>
+          <a href="ContactUs.html" class="nav-link"><i class="fas fa-phone"></i> Contact Us</a>
+          <a href="javascript:void(0)" onclick="logout()" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+      </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="contact-container">
+      <h2>Contact Us</h2>
+      <div class="contact-form">
+          <label>Full Name:</label>
+          <input type="text" placeholder="Enter your full name">
+          
+          <label>Email:</label>
+          <input type="email" placeholder="Enter email">
+          
+          <label>Message:</label>
+          <textarea rows="4" placeholder="Enter your message"></textarea>
+          
+          <button class="btn-send">Send</button>
+      </div>
+      <div class="contact-info">
+          <p><strong>Library Address:</strong> 123 Book St, Reading City, 45678</p>
+          <p><strong>Phone:</strong> (123) 456-7890</p>
+          <p><strong>Email:</strong> contact@libraryexample.com</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/Dashboard.js"></script>
+</body>
+</html>

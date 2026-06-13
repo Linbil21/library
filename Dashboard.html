@@ -5,17 +5,307 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard</title>
   <link rel="stylesheet" href="css/dashboard.css">
-   <link rel="stylesheet" href="./fontawesome-free-6.7.2-web/css/all.min.css">
+  <link rel="stylesheet" href="./fontawesome-free-6.7.2-web/css/all.min.css">
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="css/fontawesome.min.css">
+  <style>
+    .modal-overlay { display: none; }
+    .modal-overlay.show { display: flex; }
+    .modal-content {
+      background: #ffffff !important;
+      border-radius: 10px !important;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25) !important;
+      width: 50% !important;
+      max-width: 600px !important;
+      min-width: 320px !important;
+      padding: 28px 24px 20px !important;
+      box-sizing: border-box !important;
+      animation: modalSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    @keyframes modalSlideIn {
+      from { opacity: 0; transform: translateY(-18px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Details list inside modal */
+    .details-list {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 10px 0;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .details-list li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+    }
+    .details-list li:last-child { border-bottom: none; }
+    .details-list .item-title { color: #333; }
+    .details-list .item-meta  { color: #888; font-size: 12px; }
+    .btn-remove-item {
+      background: #e53935;
+      color: white;
+      border: none;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn-remove-item:hover { background: #c62828; }
+    .details-empty {
+      text-align: center;
+      color: #aaa;
+      font-size: 14px;
+      padding: 20px 0;
+    }
+    .card p { font-size: 14px; color: #666; margin-bottom: 20px; }
+  </style>
 </head>
 <body>
 
-   <nav>
-      <h1 id="welcome-message"></h1>
-      <button class="btn-header" id="header" onclick="logout()">Logout</button>
-   </nav>
+  <div class="sidebar" id="sidebar">
+      <div class="sidebar-user">
+          <i class="fas fa-bars" id="menu-btn-sidebar" style="cursor: pointer;"></i>
+          <span id="sidebar-user-name">Welcome, Linbill</span>
+      </div>
+      <ul class="sidebar-links top-links">
+          <li><a href="Dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+          <li><a href="#"><i class="fas fa-search"></i> Search Books</a></li>
+          <li><a href="Borrowers.html"><i class="fas fa-address-book"></i> Digital Library</a></li>
+          <li><a href="LibraryFines.html"><i class="fas fa-money-check"></i> Library Fines</a></li>
+          <li><a href="NewArrivals.html"><i class="fas fa-envelope"></i> New Arrivals</a></li>
+      </ul>
+      <ul class="sidebar-links bottom-links">
+          <li><a href="HelpFAQs.html"><i class="fas fa-question"></i> Help & FAQs</a></li>
+          <li><a href="javascript:void(0)" onclick="logout()"><i class="fas fa-door-open"></i> Log Out</a></li>
+      </ul>
+  </div>
+  <div class="overlay" id="overlay"></div>
 
-   <script src="js/Dashboard.js"></script>
+  <!-- Header -->
+  <header class="top-header">
+      <div class="header-left">
+          <i class="fas fa-bars menu-icon" id="menu-btn" style="cursor: pointer;"></i>
+          <span class="site-title">Welcome To Library Portal</span>
+      </div>
+      <div class="header-center">
+          <div class="search-bar">
+              <input type="text" placeholder="Search...">
+              <button class="search-btn"><i class="fas fa-search"></i></button>
+          </div>
+      </div>
+      <div class="header-right">
+          <a href="Dashboard.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+          <a href="AboutUs.html" class="nav-link"><i class="fas fa-user"></i> About</a>
+          <a href="ContactUs.html" class="nav-link"><i class="fas fa-phone"></i> Contact Us</a>
+          <a href="javascript:void(0)" onclick="logout()" class="nav-link"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+      </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <div class="dashboard-container">
+
+      <div class="card" id="card-ebooks">
+        <div class="card-icon"><i class="fas fa-book"></i></div>
+        <h3>Total Ebooks</h3>
+        <p id="count-ebooks">Total: 0</p>
+        <div class="card-actions">
+          <button class="btn-add" onclick="openAddModal('ebooks')">Add</button>
+          <a href="#" class="view-details" onclick="openDetailsModal('ebooks'); return false;">View-Details</a>
+        </div>
+      </div>
+
+      <div class="card" id="card-pdfs">
+        <div class="card-icon"><i class="fas fa-file-pdf"></i></div>
+        <h3>Total PDFs</h3>
+        <p id="count-pdfs">Total: 0</p>
+        <div class="card-actions">
+          <button class="btn-add" onclick="openAddModal('pdfs')">Add</button>
+          <a href="#" class="view-details" onclick="openDetailsModal('pdfs'); return false;">View-Details</a>
+        </div>
+      </div>
+
+      <div class="card" id="card-research">
+        <div class="card-icon"><i class="fas fa-scroll"></i></div>
+        <h3>Research Papers</h3>
+        <p id="count-research">Total: 0</p>
+        <div class="card-actions">
+          <button class="btn-add" onclick="openAddModal('research')">Add</button>
+          <a href="#" class="view-details" onclick="openDetailsModal('research'); return false;">View-Details</a>
+        </div>
+      </div>
+
+      <div class="card" id="card-students">
+        <div class="card-icon"><i class="fas fa-users"></i></div>
+        <h3>Registered Students</h3>
+        <p id="count-students">Total: 0</p>
+        <div class="card-actions">
+          <button class="btn-add" onclick="openAddModal('students')">Add</button>
+          <a href="#" class="view-details" onclick="openDetailsModal('students'); return false;">View-Details</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ADD Modal -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal-content">
+      <h3 id="addModalTitle">Add Item</h3>
+      <label id="addLabel1">Title</label>
+      <input type="text" id="addField1" placeholder="Enter title">
+      <div id="addExtraFields"></div>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+        <button class="btn-modal-save" onclick="saveItem()">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW DETAILS Modal -->
+  <div class="modal-overlay" id="detailsModal">
+    <div class="modal-content">
+      <h3 id="detailsModalTitle">Details</h3>
+      <ul class="details-list" id="detailsList"></ul>
+      <div class="modal-actions">
+        <button class="btn-modal-cancel" onclick="closeModal('detailsModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/Dashboard.js"></script>
+  <script>
+    // ── Data Store ────────────────────────────────────────────────────
+    const store = {
+      ebooks:   [
+        { title: "The Great Gatsby",    author: "F. Scott Fitzgerald" },
+        { title: "Noli Me Tangere",     author: "Jose Rizal" },
+        { title: "El Filibusterismo",   author: "Jose Rizal" },
+        { title: "Florante at Laura",   author: "Francisco Balagtas" },
+      ],
+      pdfs:     [
+        { title: "Mathematics Basics",  author: "Unknown" },
+        { title: "Science Textbook",    author: "Unknown" },
+      ],
+      research: [
+        { title: "Climate Change 2024", author: "IPCC" },
+        { title: "AI in Education",     author: "UNESCO" },
+      ],
+      students: [
+        { title: "Lord Aldron Silvano", author: "Grade 10" },
+        { title: "Micheal Subito",      author: "Grade 11" },
+        { title: "Audrey Duarong",      author: "Grade 10" },
+        { title: "Linbil Celestre",     author: "Grade 12" },
+      ],
+    };
+
+    const labels = {
+      ebooks:   { title: "Total Ebooks",        field1: "Book Title", field2: "Author" },
+      pdfs:     { title: "Total PDFs",           field1: "PDF Title",  field2: "Author / Source" },
+      research: { title: "Research Papers",      field1: "Paper Title", field2: "Author" },
+      students: { title: "Registered Students",  field1: "Student Name", field2: "Year/Grade" },
+    };
+
+    let activeCategory = "";
+
+    // ── Update card counts ────────────────────────────────────────────
+    function updateCounts() {
+      document.getElementById("count-ebooks").textContent   = `Total: ${store.ebooks.length}`;
+      document.getElementById("count-pdfs").textContent     = `Total: ${store.pdfs.length}`;
+      document.getElementById("count-research").textContent = `Total: ${store.research.length}`;
+      document.getElementById("count-students").textContent = `Total: ${store.students.length}`;
+    }
+
+    // ── Open ADD modal ────────────────────────────────────────────────
+    function openAddModal(category) {
+      activeCategory = category;
+      const lbl = labels[category];
+      document.getElementById("addModalTitle").textContent = `Add to ${lbl.title}`;
+      document.getElementById("addLabel1").textContent = lbl.field1;
+      document.getElementById("addField1").value = "";
+      document.getElementById("addField1").placeholder = `Enter ${lbl.field1.toLowerCase()}`;
+      document.getElementById("addExtraFields").innerHTML = `
+        <label>${lbl.field2}</label>
+        <input type="text" id="addField2" placeholder="Enter ${lbl.field2.toLowerCase()}">
+      `;
+      openModal("addModal");
+    }
+
+    // ── Save item ─────────────────────────────────────────────────────
+    function saveItem() {
+      const field1 = document.getElementById("addField1").value.trim();
+      const field2 = document.getElementById("addField2") ? document.getElementById("addField2").value.trim() : "";
+      if (!field1) { alert("Please fill in the required field."); return; }
+      store[activeCategory].push({ title: field1, author: field2 });
+      updateCounts();
+      closeModal("addModal");
+    }
+
+    // ── Open DETAILS modal ────────────────────────────────────────────
+    function openDetailsModal(category) {
+      activeCategory = category;
+      const lbl   = labels[category];
+      const items = store[category];
+      document.getElementById("detailsModalTitle").textContent = lbl.title;
+      const list = document.getElementById("detailsList");
+      if (items.length === 0) {
+        list.innerHTML = `<p class="details-empty">No records found.</p>`;
+      } else {
+        list.innerHTML = items.map((item, i) => `
+          <li>
+            <div>
+              <div class="item-title">${item.title}</div>
+              <div class="item-meta">${item.author}</div>
+            </div>
+            <button class="btn-remove-item" onclick="removeItem('${category}', ${i})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </li>`).join("");
+      }
+      openModal("detailsModal");
+    }
+
+    // ── Remove item from details list ─────────────────────────────────
+    function removeItem(category, index) {
+      if (confirm("Remove this record?")) {
+        store[category].splice(index, 1);
+        updateCounts();
+        openDetailsModal(category); // refresh modal
+      }
+    }
+
+    // ── Generic open / close ──────────────────────────────────────────
+    function openModal(id) {
+      document.getElementById(id).classList.add("show");
+      document.body.style.overflow = "hidden";
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("show");
+      document.body.style.overflow = "";
+    }
+
+    // Close on backdrop click
+    ["addModal", "detailsModal"].forEach(id => {
+      document.getElementById(id).addEventListener("click", function(e) {
+        if (e.target === this) closeModal(id);
+      });
+    });
+
+    // Close on Escape
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        closeModal("addModal");
+        closeModal("detailsModal");
+      }
+    });
+
+    // ── Init ──────────────────────────────────────────────────────────
+    updateCounts();
+  </script>
 </body>
 </html>
