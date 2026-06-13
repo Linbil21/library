@@ -25,5 +25,5 @@
       };
       localStorage.setItem("user", JSON.stringify(user));
       alert("Registered successfully! Please log in.");
-      window.location.href = "login.html";
+      window.location.href = "Login.html";
     });

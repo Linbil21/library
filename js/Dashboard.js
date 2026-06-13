@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!isLoggedIn || !name) {
     alert("You must login first.");
-    window.location.href = "login.html";
+    window.location.href = "Login.html";
   } else {
     const sidebarUserName = document.getElementById("sidebar-user-name");
     if (sidebarUserName) {
