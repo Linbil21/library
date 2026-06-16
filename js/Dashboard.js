@@ -57,5 +57,5 @@ document.addEventListener("DOMContentLoaded", () => {
 function logout() {
   localStorage.removeItem("isLoggedIn");
   localStorage.removeItem("loggedInName");
-  window.location.href = "Login.html";
+  window.location.href = "login.html";
 }
